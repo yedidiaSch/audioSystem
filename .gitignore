@@ -4,6 +4,7 @@
 *.bin
 *.so
 *.out
+*.elf
 
 # Ignore specific directories
 /build/
