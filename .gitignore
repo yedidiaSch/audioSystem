@@ -1,0 +1,13 @@
+# Ignore all compiled files
+*.gch
+*.o
+*.bin
+*.so
+*.out
+
+# Ignore specific directories
+/build/
+/temp/
+
+# Ignore all log files
+*.log
