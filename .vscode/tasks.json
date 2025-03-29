@@ -2,7 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Audio with RTAudio",
+            "label": "Create Bin Directory",
+            "type": "shell",
+            "command": "mkdir -p bin",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Audio Project",
             "type": "shell",
             "command": "g++",
             "args": [
@@ -12,26 +25,29 @@
                 "src/main.cpp",
                 "src/audioDevice.cpp",
                 "src/audioSystem.cpp",
-                "src/Effects/OctaveEffect.cpp",
+                "src/utilities/subject.cpp", 
                 "-o",
-                "output.elf",
+                "${workspaceFolder}/bin/audioApp",
                 "-I/home/yedidia/rtaudio/include",
                 "-I/home/yedidia/rtaudio",
                 "-L/home/yedidia/rtaudio/build",
                 "-lrtaudio",
-                "-lsndfile",
-                "-lstdc++fs",
-                "-lpthread",
-                "-lasound"
-               
+                "-lasound",
+                "-lpthread"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": [
-                "$gcc"
-            ]
+            "dependsOn": ["Create Bin Directory"],
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         },
         {
             "type": "cppbuild",
