@@ -1,8 +1,10 @@
 #include "MidiDevice.h"
+#include "MidiEvent.h"
 #include <iostream>
+#include <cmath>
 
 // Constructor with port selection
-MidiDevice::MidiDevice(AudioSystem* audioSystem, int portNumber) : audioSystem(audioSystem), isInitialized(false) {
+MidiDevice::MidiDevice(int portNumber) : isInitialized(false) {
     try {
         // List available ports
         unsigned int nPorts = midiin.getPortCount();
@@ -99,14 +101,14 @@ void MidiDevice::midiCallback(double timeStamp, std::vector<unsigned char>* mess
     // Handle different MIDI message types
     switch (messageType) {
         case 0x80: // Note Off
-            device->audioSystem->noteOff(data1);
+            device->handleNoteOff(channel, data1);
             break;
             
         case 0x90: // Note On
             if (data2 > 0) {
-                device->audioSystem->noteOn(data1, data2);
+                device->handleNoteOn(channel, data1, data2);
             } else {
-                device->audioSystem->noteOff(data1); // Note On with velocity 0 is equivalent to Note Off
+                device->handleNoteOff(channel, data1); // Note On with velocity 0 is equivalent to Note Off
             }
             break;
             
@@ -123,26 +125,63 @@ void MidiDevice::midiCallback(double timeStamp, std::vector<unsigned char>* mess
     }
 }
 
+// Handle MIDI Note On messages
+void MidiDevice::handleNoteOn(unsigned char channel, unsigned char note, unsigned char velocity) {
+    MidiEvent event;
+    event.type = MidiEventType::NOTE_ON;
+    event.channel = channel;
+    event.data1 = note;
+    event.data2 = velocity;
+    event.value = midiNoteToFrequency(note);  // Convert note to frequency
+    
+    // Notify all observers about the Note On event
+    notify(&event);
+}
+
+// Handle MIDI Note Off messages
+void MidiDevice::handleNoteOff(unsigned char channel, unsigned char note) {
+    MidiEvent event;
+    event.type = MidiEventType::NOTE_OFF;
+    event.channel = channel;
+    event.data1 = note;
+    event.data2 = 0;
+    
+    // Notify all observers about the Note Off event
+    notify(&event);
+}
+
 // Handle MIDI Control Change messages
 void MidiDevice::handleControlChange(unsigned char channel, unsigned char controller, unsigned char value) {
-    // Example handling of common controllers
-    switch (controller) {
-        case 1: // Modulation wheel
-            std::cout << "Modulation: " << static_cast<int>(value) << std::endl;
-            // Implement handling logic
-            break;
-            
-        case 7: // Volume
-            std::cout << "Volume: " << static_cast<int>(value) << std::endl;
-            // Implement handling logic
-            break;
-            
-        // Handle other controllers as needed
-    }
+    MidiEvent event;
+    event.type = MidiEventType::CONTROL_CHANGE;
+    event.channel = channel;
+    event.data1 = controller;
+    event.data2 = value;
+    
+    // Notify all observers about the Control Change event
+    notify(&event);
+    
+    // Log the event (can be removed if not needed)
+    std::cout << "Control Change: " << static_cast<int>(controller) 
+              << " Value: " << static_cast<int>(value) << std::endl;
 }
 
 // Handle MIDI Pitch Bend messages
 void MidiDevice::handlePitchBend(unsigned char channel, int value) {
+    MidiEvent event;
+    event.type = MidiEventType::PITCH_BEND;
+    event.channel = channel;
+    event.value = value;
+    
+    // Notify all observers about the Pitch Bend event
+    notify(&event);
+    
+    // Log the event (can be removed if not needed)
     std::cout << "Pitch bend: " << value << std::endl;
-    // Implement handling logic
+}
+
+// Helper function to convert MIDI note number to frequency
+float MidiDevice::midiNoteToFrequency(unsigned char midiNote) {
+    // Standard formula: A4 (MIDI note 69) = 440Hz
+    return 440.0f * std::pow(2.0f, (midiNote - 69) / 12.0f);
 }

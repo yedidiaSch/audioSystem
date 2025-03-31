@@ -6,32 +6,83 @@
 #include <utility>
 #include "Effects/IEffect.h"
 
+/**
+ * @file audioSystem.h
+ * @brief Main audio processing system that handles sound generation and effects processing
+ * 
+ * This class provides functionality for generating simple audio tones and
+ * processing them through a chain of audio effects.
+ */
 
-class AudioSystem {
+/**
+ * @class AudioSystem
+ * @brief Core audio processing class that generates tones and applies effects
+ * 
+ * The AudioSystem class handles the generation of simple audio tones based on
+ * frequency input and processes them through a configurable chain of audio effects.
+ * It provides interfaces for triggering notes, managing effects, and retrieving
+ * processed audio samples.
+ */
+class AudioSystem 
+{
+
 public:
-    explicit AudioSystem(float sampleRate);
 
-    void triggerNote(float newFrequency);
-    void triggerNoteOff();
+    /**
+     * @brief Constructs an AudioSystem with the specified sample rate
+     * @param sampleRate The number of samples per second (Hz)
+     */
+    explicit AudioSystem                        (float sampleRate);
 
-    // Generate the next stereo audio sample
-    std::pair<float, float> getNextSample();
+    /**
+     * @brief Triggers a note with the specified frequency
+     * @param newFrequency The frequency in Hz of the note to play
+     */
+    void triggerNote                            (float newFrequency);
 
-    // Add an effect to the processing chain
-    void addEffect(std::shared_ptr<IEffect> effect);
+    /**
+     * @brief Stops the currently playing note
+     */
+    void triggerNoteOff                         ();
 
-    // Apply all effects to a stereo sample
-    std::pair<float, float> applyEffects(std::pair<float, float> stereoSample);
+    
+    /**
+     * @brief Calculates and returns the next stereo audio sample
+     * @return A pair of floats representing the left and right channel values
+     */
+    std::pair<float, float> getNextSample       ();
 
-    void resetEffects();
+    
+    /**
+     * @brief Adds an audio effect to the processing chain
+     * @param effect Shared pointer to an effect implementing the IEffect interface
+     */
+    void addEffect                              (std::shared_ptr<IEffect> effect);
+
+    
+    /**
+     * @brief Processes a stereo sample through all added effects
+     * @param stereoSample Input stereo sample (left and right channels)
+     * @return The processed stereo sample after applying all effects
+     */
+    std::pair<float, float> applyEffects        (std::pair<float, float> stereoSample);
+
+    /**
+     * @brief Resets all effects to their initial state
+     */
+    void resetEffects                           ();
 
 private:
-    float m_frequency;       // Frequency of the note being played
-    float m_sampleRate;      // Sample rate of the audio system
-    float m_phase;           // Phase for generating the primary wave
-    bool m_noteOn;           // Indicates if a note is currently being played
 
-    std::vector<std::shared_ptr<IEffect>> m_effects; // List of effects in the chain
+    float m_frequency;       ///< Current note frequency in Hz
+
+    float m_sampleRate;      ///< Audio sample rate in Hz
+    
+    float m_phase;           ///< Current phase of the oscillator (0.0 to 1.0)
+    
+    bool m_noteOn;           ///< Flag indicating whether a note is currently playing
+    
+    std::vector<std::shared_ptr<IEffect>> m_effects; ///< Chain of audio effects to apply
 };
 
 #endif // AUDIOSYSTEM_H
