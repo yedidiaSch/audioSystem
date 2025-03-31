@@ -34,7 +34,7 @@ make
 sudo make install
 ```
 
-Usage
+### Usage
 1. Connect a MIDI input device to your computer
 2. Run the application:
 
@@ -45,7 +45,7 @@ Usage
 3. Play notes on your MIDI controller to generate audio
 4. Press any key in the terminal window to stop the application
 
-Future Improvements
+### Future Improvements
 - Add more waveform types (sine, sawtooth, triangle)
 - Implement ADSR envelope for amplitude shaping
 - Add polyphony support (multiple notes at once)
@@ -53,10 +53,10 @@ Future Improvements
 - Add GUI for parameter control
 - Support for audio file playback and recording
 
-License
+### License
 This project is available under the MIT License.
 
-Contributing
+### Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 
