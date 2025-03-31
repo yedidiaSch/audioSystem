@@ -24,33 +24,12 @@ int main()
     MidiDevice midiDevice(1);
     midiDevice.start();
  
-    std::vector<std::string> ports = midiDevice.listPorts();
-    for (size_t i = 0; i < ports.size(); ++i) {
-        std::cout << "[" << i << "] " << ports[i] << std::endl;
-    }
 
     // Create the AudioSystemAdapter
     AudioSystemAdapter audioSystemAdapter(&audioSystem);
     // Attach the AudioSystemAdapter to the MidiDevice
     midiDevice.attach(&audioSystemAdapter);
 
-
-    // Simulate note sequence
-    // audioSystem.triggerNote(C3_FREQ); 
-    // std::this_thread::sleep_for(std::chrono::milliseconds(30));
-    // audioSystem.triggerNoteOff();
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
-    // audioSystem.triggerNote(D_SHARP3_FREQ);  
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    // audioSystem.triggerNoteOff();
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(20));
-
-    // audioSystem.triggerNote(G3_FREQ);  
-    // std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    // audioSystem.triggerNoteOff();
 
     // Sleep for 50 seconds to allow MIDI input
     std::cout << "Press any key to stop..." << std::endl;
