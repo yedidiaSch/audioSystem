@@ -2,6 +2,8 @@
 
 A real-time audio synthesis engine that responds to MIDI input, generating digital audio with customizable effects chains.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ## Features
 - Real-time audio processing using RtAudio
 - MIDI input support via RtMidi
