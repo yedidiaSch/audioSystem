@@ -26,6 +26,7 @@
                 "${workspaceFolder}/src/Midi/*.cpp",
                 "${workspaceFolder}/src/utilities/*.cpp",
                 "${workspaceFolder}/src/Effects/*.cpp",
+                "${workspaceFolder}/src/Waves/*.cpp",
                 "-o",
                 "${workspaceFolder}/bin/audioApp",
                 "-I/usr/include/rtmidi",

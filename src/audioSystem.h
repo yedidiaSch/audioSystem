@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 #include "Effects/IEffect.h"
+#include "Waves/IWave.h"
 
 /**
  * @file audioSystem.h
@@ -72,6 +73,12 @@ public:
      */
     void resetEffects                           ();
 
+    /**
+     * @brief Sets the waveform generator
+     * @param waveform Shared pointer to a waveform generator implementing the IWave interface
+     */
+    void setWaveform                            (std::shared_ptr<IWave> waveform);
+
 private:
 
     float m_frequency;       ///< Current note frequency in Hz
@@ -83,6 +90,8 @@ private:
     bool m_noteOn;           ///< Flag indicating whether a note is currently playing
     
     std::vector<std::shared_ptr<IEffect>> m_effects; ///< Chain of audio effects to apply
+
+    std::shared_ptr<IWave> m_waveform; ///< Waveform generator
 };
 
 #endif // AUDIOSYSTEM_H

@@ -1,12 +1,20 @@
 #include <cmath>
 #include <algorithm> // For std::find
 #include "audioSystem.h"
+#include "Waves/SquareWave.h" // Include the square wave implementation
 
 AudioSystem::AudioSystem(float sampleRate) : m_frequency(0.0f),
                                              m_sampleRate(sampleRate),
                                              m_phase(0.0f),
                                              m_noteOn(false) 
 {
+    // Default to square wave
+    m_waveform = std::make_shared<SquareWave>();
+}
+
+void AudioSystem::setWaveform(std::shared_ptr<IWave> waveform)
+{
+    m_waveform = waveform;
 }
 
 void AudioSystem::triggerNote(float newFrequency) 
@@ -25,20 +33,13 @@ void AudioSystem::triggerNoteOff()
 
 std::pair<float, float> AudioSystem::getNextSample() 
 {
-    if (!m_noteOn) 
+    if (!m_noteOn || !m_waveform) 
     {
         return {0.0f, 0.0f};
     }
 
-    // Generate a square wave sample
-    float sample = (m_phase < 0.5f) ? 1.0f : -1.0f;
-
-    // Update the phase for the square wave
-    m_phase += m_frequency / m_sampleRate;
-    if (m_phase >= 1.0f) 
-    {
-        m_phase -= 1.0f;
-    }
+    // Generate a sample using the waveform generator
+    float sample = m_waveform->generate(m_frequency, m_sampleRate, m_phase);
 
     // Create a stereo sample (initially identical in both channels)
     std::pair<float, float> stereoSample{sample, sample};
@@ -48,7 +49,6 @@ std::pair<float, float> AudioSystem::getNextSample()
 
     return stereoSample;
 }
-
 
 std::pair<float, float> AudioSystem::applyEffects(std::pair<float, float> stereoSample) 
 {
