@@ -7,40 +7,53 @@
 #include "notes.h"
 #include "AudioSystemAdapter.h"
 
+
+
 int main() 
 {
-    float sampleRate            = 44100.0f;
-    unsigned int bufferFrames   = 512;
-
+    float           sampleRate      = 44100.0f;
+    unsigned int    bufferFrames    = 512;
+    
 
     AudioSystem audioSystem(sampleRate);
     AudioDevice audioDevice(&audioSystem, sampleRate, bufferFrames);
 
+    // Create the AudioSystemAdapter
+    AudioSystemAdapter audioSystemAdapter(&audioSystem);
 
     // Start the audio stream
     audioDevice.start();
 
+    // Add a longer delay to let the audio system initialize fully
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    
     // Init the midi device
     MidiDevice midiDevice(1);
-    midiDevice.start();
- 
-
-    // Create the AudioSystemAdapter
-    AudioSystemAdapter audioSystemAdapter(&audioSystem);
-    // Attach the AudioSystemAdapter to the MidiDevice
+    
+    // Attach the AudioSystemAdapter to the MidiDevice before starting
     midiDevice.attach(&audioSystemAdapter);
-
-
-    // Sleep for 50 seconds to allow MIDI input
-    std::cout << "Press any key to stop..." << std::endl;
-    std::cin.get();
-    // Stop the MIDI device
+    
+    // Now start the MIDI device
+    midiDevice.start();
+    
+    std::cout << "Audio system running. Press Enter to stop..." << std::endl;
+    
+    // Main program loop - keep system alive while waiting for input
+    while (!std::cin.get()) {
+        // Process audio in small chunks to prevent underruns
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    
+    std::cout << "Shutting down..." << std::endl;
+    
+    // Stop devices in reverse order of starting
     midiDevice.stop();
-    // Stop the audio device
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     audioDevice.stop();
-    // Sleep for a short duration to ensure all audio is processed
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    
+    // Final sleep to ensure all resources are released
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-
+    std::cout << "Program terminated normally." << std::endl;
     return 0;
 }

@@ -89,6 +89,8 @@ bool MidiDevice::changePort(unsigned int portNumber) {
 
 // Static callback function for MIDI messages
 void MidiDevice::midiCallback(double timeStamp, std::vector<unsigned char>* message, void* userData) {
+    (void)timeStamp;
+    
     if (message->empty()) return;
 
     MidiDevice* device = static_cast<MidiDevice*>(userData);
