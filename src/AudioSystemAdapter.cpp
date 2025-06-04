@@ -1,4 +1,5 @@
 #include "AudioSystemAdapter.h"
+#include <stdexcept>
 
 AudioSystemAdapter::AudioSystemAdapter(AudioSystem* pAudioSystem) : itsAudioSystem(pAudioSystem) 
 {

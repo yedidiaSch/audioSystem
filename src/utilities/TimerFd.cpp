@@ -29,11 +29,17 @@ TimerFd::~TimerFd()
 
 void TimerFd::SetTimer(std::chrono::milliseconds delay, std::chrono::milliseconds interval)
 {
-    itimerspec task_timer;
-    task_timer.it_interval.tv_sec = (interval / SEC_TO_MILI).count();
-    task_timer.it_interval.tv_nsec = ((interval % SEC_TO_MILI) * MILI_TO_NANO).count();
-    task_timer.it_value.tv_sec = (delay / SEC_TO_MILI).count();
-    task_timer.it_value.tv_nsec = ((delay % SEC_TO_MILI) * MILI_TO_NANO).count();
+    itimerspec task_timer{};
+    task_timer.it_interval.tv_sec =
+        std::chrono::duration_cast<std::chrono::seconds>(interval).count();
+    task_timer.it_interval.tv_nsec =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            interval % std::chrono::seconds(1)).count();
+    task_timer.it_value.tv_sec =
+        std::chrono::duration_cast<std::chrono::seconds>(delay).count();
+    task_timer.it_value.tv_nsec =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            delay % std::chrono::seconds(1)).count();
 
     if (timerfd_settime(m_timer_fd, 0, &task_timer, NULL) == -1)
     {
@@ -50,7 +56,8 @@ long TimerFd::GetTimer()
         throw std::runtime_error("timerfd_gettime error: " + std::string(strerror(errno)));
     }
     
-    return task_timer.it_value.tv_sec + task_timer.it_value.tv_nsec;
+    return task_timer.it_value.tv_sec * SEC_TO_MILI +
+           task_timer.it_value.tv_nsec / MILI_TO_NANO;
 }
 
 void TimerFd::Start()
