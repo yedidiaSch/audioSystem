@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utilities/IObserver.h"
+#include "../utilities/IObserver.h"
 #include "audioSystem.h"
 #include "Midi/MidiEvent.h"
 
