@@ -4,8 +4,18 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <string>
 #include "Effects/IEffect.h"
 #include "Waves/IWave.h"
+
+/**
+ * @brief Configuration options for selecting waveform and effects
+ */
+struct AudioConfig
+{
+    std::string waveform;               ///< Name of the oscillator to use
+    std::vector<std::string> effects;   ///< Ordered list of effect names
+};
 
 /**
  * @file audioSystem.h
@@ -24,7 +34,7 @@
  * It provides interfaces for triggering notes, managing effects, and retrieving
  * processed audio samples.
  */
-class AudioSystem 
+class AudioSystem
 {
 
 public:
@@ -78,6 +88,15 @@ public:
      * @param waveform Shared pointer to a waveform generator implementing the IWave interface
      */
     void setWaveform                            (std::shared_ptr<IWave> waveform);
+
+    /**
+     * @brief Apply a configuration to choose waveform and effect chain
+     *
+     * The configuration structure contains the name of the desired waveform
+     * and an ordered list of effect identifiers. Any existing effects are
+     * cleared and replaced based on this information.
+     */
+    void configure                             (const AudioConfig& config);
 
 private:
 

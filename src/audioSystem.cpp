@@ -2,6 +2,12 @@
 #include <algorithm> // For std::find
 #include "audioSystem.h"
 #include "Waves/SquareWave.h" // Include the square wave implementation
+#include "Waves/SineWave.h"
+#include "Waves/SawtoothWave.h"
+#include "Waves/TriangleWave.h"
+#include "Effects/OctaveEffect.h"
+#include "Effects/DelayEffect.h"
+#include "Effects/LowPassEffect.h"
 
 AudioSystem::AudioSystem(float sampleRate) : m_frequency(0.0f),
                                              m_sampleRate(sampleRate),
@@ -17,11 +23,65 @@ void AudioSystem::setWaveform(std::shared_ptr<IWave> waveform)
     m_waveform = waveform;
 }
 
-void AudioSystem::triggerNote(float newFrequency) 
+// Configure the oscillator and effects based on the provided AudioConfig
+void AudioSystem::configure(const AudioConfig& config)
+{
+    // Select waveform
+    if (config.waveform == "sine")
+        m_waveform = std::make_shared<SineWave>();
+    else if (config.waveform == "sawtooth")
+        m_waveform = std::make_shared<SawtoothWave>();
+    else if (config.waveform == "triangle")
+        m_waveform = std::make_shared<TriangleWave>();
+    else
+        m_waveform = std::make_shared<SquareWave>();
+
+    // Clear existing effects
+    m_effects.clear();
+
+    // Instantiate effects listed in the configuration
+    for (const auto& name : config.effects)
+    {
+        if (name == "octave")
+        {
+            auto eff = std::make_shared<OctaveEffect>();
+            m_effects.push_back(eff);
+        }
+        else if (name == "delay")
+        {
+            auto eff = std::make_shared<DelayEffect>(0.3f, 0.5f, 0.5f, m_sampleRate);
+            m_effects.push_back(eff);
+        }
+        else if (name == "lowpass")
+        {
+            auto eff = std::make_shared<LowPassEffect>(1000.0f, m_sampleRate);
+            m_effects.push_back(eff);
+        }
+    }
+}
+
+void AudioSystem::triggerNote(float newFrequency)
 {
     m_frequency = newFrequency;
     m_noteOn = true;
     m_phase = 0.0f;
+
+    for (auto& effect : m_effects)
+    {
+        if (auto octave = std::dynamic_pointer_cast<OctaveEffect>(effect))
+        {
+            octave->setFrequency(newFrequency);
+            octave->setSampleRate(m_sampleRate);
+        }
+        else if (auto delay = std::dynamic_pointer_cast<DelayEffect>(effect))
+        {
+            delay->setSampleRate(m_sampleRate);
+        }
+        else if (auto lp = std::dynamic_pointer_cast<LowPassEffect>(effect))
+        {
+            lp->setSampleRate(m_sampleRate);
+        }
+    }
 
     resetEffects();
 }
