@@ -1,7 +1,7 @@
 #include "MidiDevice.h"
 #include "MidiEvent.h"
 #include <iostream>
-#include <cmath>
+#include "../notes.h"
 
 // Constructor with port selection
 MidiDevice::MidiDevice(int portNumber) : isInitialized(false) {
@@ -184,6 +184,5 @@ void MidiDevice::handlePitchBend(unsigned char channel, int value) {
 
 // Helper function to convert MIDI note number to frequency
 float MidiDevice::midiNoteToFrequency(unsigned char midiNote) {
-    // Standard formula: A4 (MIDI note 69) = 440Hz
-    return 440.0f * std::pow(2.0f, (midiNote - 69) / 12.0f);
+    return MIDI_NOTE_FREQUENCIES[midiNote];
 }
