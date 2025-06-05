@@ -13,9 +13,12 @@ int main()
 {
     float           sampleRate      = 44100.0f;
     unsigned int    bufferFrames    = 512;
-    
 
     AudioSystem audioSystem(sampleRate);
+    AudioConfig config;
+    config.waveform = "sine";
+    config.effects = {"delay", "lowpass"};
+    audioSystem.configure(config);
     AudioDevice audioDevice(&audioSystem, sampleRate, bufferFrames);
 
     // Create the AudioSystemAdapter

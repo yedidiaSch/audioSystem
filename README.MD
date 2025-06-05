@@ -9,6 +9,9 @@ A real-time audio synthesis engine that responds to MIDI input, generating digit
 - MIDI input support via RtMidi
 - Modular effects chain system
 - Configurable sample rate and buffer size
+- Multiple waveforms including sine, square, sawtooth and triangle
+- Built-in delay and low-pass filter effects
+- Simple configuration API for selecting waves and effects
 
 ## Requirements
 - C++14 compatible compiler
@@ -46,6 +49,19 @@ sudo make install
 
 3. Play notes on your MIDI controller to generate audio
 4. Press any key in the terminal window to stop the application
+
+### Configuration Example
+The audio system can be configured at runtime with a simple structure:
+
+```cpp
+AudioConfig cfg;
+cfg.waveform = "sawtooth";
+cfg.effects = {"delay", "lowpass"};
+audioSystem.configure(cfg);
+```
+
+This selects a sawtooth oscillator and adds delay and low-pass filter effects
+to the processing chain.
 
 ### Future Improvements
 - Add more waveform types (sine, sawtooth, triangle)
