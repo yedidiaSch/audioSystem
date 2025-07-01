@@ -60,8 +60,11 @@ cfg.effects = {"delay", "lowpass"};
 audioSystem.configure(cfg);
 ```
 
-This selects a sawtooth oscillator and adds delay and low-pass filter effects
-to the processing chain.
+This selects a sawtooth oscillator and adds delay and low-pass filter effects to the processing chain.
+ 
+
+## Embedded FreeRTOS STM32 Example
+See `embedded/` for a reference port using FreeRTOS and the STM32 HAL. It shows how to stream synthesized audio via DMA to I2S or DAC. The example builds a sine lookup table and allows custom waveform or effect callbacks via `AudioTaskInit`.
 
 ### Future Improvements
 - Add more waveform types (sine, sawtooth, triangle)
