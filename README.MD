@@ -66,19 +66,45 @@ This selects a sawtooth oscillator and adds delay and low-pass filter effects to
 ## Embedded FreeRTOS STM32 Example
 See `embedded/` for a reference port using FreeRTOS and the STM32 HAL. It shows how to stream synthesized audio via DMA to I2S or DAC. The example builds a sine lookup table and allows custom waveform or effect callbacks via `AudioTaskInit`.
 
+## Code Quality Features
+- **Input Validation**: Comprehensive parameter validation throughout the codebase
+- **Memory Safety**: Smart pointer usage and null pointer checks
+- **Error Handling**: Graceful handling of invalid inputs and edge cases
+- **Documentation**: Extensive Doxygen-style documentation for all interfaces
+- **Consistent Coding Style**: Standardized formatting and naming conventions
+- **Performance Optimizations**: Efficient phase calculations and reduced allocations
+
+## Architecture
+- **Modular Design**: Clean separation between waveforms, effects, and audio processing
+- **Observer Pattern**: MIDI events are processed through a clean observer interface
+- **Configurable Effects Chain**: Runtime configuration of waveform and effects
+- **Case-Insensitive Configuration**: Flexible configuration with alias support
+
+### Recent Improvements
+- ✅ Complete ADSR envelope implementation
+- ✅ Enhanced input validation and error handling
+- ✅ Improved documentation and code consistency
+- ✅ Performance optimizations in audio processing
+- ✅ Better resource management and memory safety
+- ✅ Case-insensitive configuration system
+
 ### Future Improvements
-- Add more waveform types (sine, sawtooth, triangle)
-- Implement ADSR envelope for amplitude shaping
 - Add polyphony support (multiple notes at once)
-- Create more audio effects (delay, reverb, filters)
+- Implement advanced synthesis algorithms (FM, AM)
+- Create more audio effects (reverb, chorus, distortion)
 - Add GUI for parameter control
 - Support for audio file playback and recording
+- Unit test framework and automated testing
 
 ### License
 This project is available under the MIT License.
 
 ### Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. When contributing:
+- Follow the existing code style and documentation standards
+- Add appropriate input validation and error handling
+- Include comprehensive documentation for new features
+- Test your changes thoroughly before submitting
 
 
 
