@@ -42,24 +42,31 @@ void DelayEffect::reset()
 
 void DelayEffect::setSampleRate(float sampleRate)
 {
-    m_sampleRate = sampleRate;
-    updateBufferSize();
+    if (sampleRate > 0.0f) {
+        m_sampleRate = sampleRate;
+        updateBufferSize();
+    }
 }
 
 void DelayEffect::setDelayTime(float delayTime)
 {
-    m_delayTime = delayTime;
-    updateBufferSize();
+    // Limit delay time to reasonable range (0.001s to 5s)
+    if (delayTime >= 0.001f && delayTime <= 5.0f) {
+        m_delayTime = delayTime;
+        updateBufferSize();
+    }
 }
 
 void DelayEffect::setFeedback(float feedback)
 {
-    m_feedback = feedback;
+    // Clamp feedback to prevent runaway feedback
+    m_feedback = std::clamp(feedback, 0.0f, 0.95f);
 }
 
 void DelayEffect::setMix(float mix)
 {
-    m_mix = mix;
+    // Clamp mix to valid range
+    m_mix = std::clamp(mix, 0.0f, 1.0f);
 }
 
 // Resize the delay buffers whenever parameters change

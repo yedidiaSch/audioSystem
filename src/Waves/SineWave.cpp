@@ -18,6 +18,11 @@ SineWave::~SineWave()
 
 float SineWave::generate(float frequency, float sampleRate, float& phase)
 {
+    // Input validation
+    if (frequency <= 0.0f || sampleRate <= 0.0f) {
+        return 0.0f;
+    }
+    
     // Generate a sine wave sample using the current phase
     // sin(2π * phase) gives us a value between -1.0 and 1.0
     float sample = std::sin(2.0f * M_PI * phase);
@@ -28,9 +33,9 @@ float SineWave::generate(float frequency, float sampleRate, float& phase)
     phase += frequency / sampleRate;
     
     // Wrap the phase back to [0, 1) range if it exceeds 1.0
-    // This is more efficient than using fmod
+    // Using fmod for more robust phase wrapping in case of large phase values
     if (phase >= 1.0f) {
-        phase -= 1.0f;
+        phase = std::fmod(phase, 1.0f);
     }
     
     return sample;
