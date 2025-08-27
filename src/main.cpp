@@ -7,19 +7,17 @@
 #include "Midi/MidiDevice.h"
 #include "notes.h"
 #include "AudioSystemAdapter.h"
+#include "ConfigReader.h"
 
 /**
- * @brief Initialize and configure the audio system
- * @param sampleRate Sample rate for audio processing
+ * @brief Initialize and configure the audio system from XML configuration
+ * @param config AudioConfig loaded from XML file
  * @return Configured AudioSystem instance
  */
-AudioSystem initializeAudioSystem(float sampleRate) {
-    AudioSystem audioSystem(sampleRate);
+AudioSystem initializeAudioSystem(const AudioConfig& config) {
+    AudioSystem audioSystem(config.sampleRate);
     
-    // Configure with a nice default setup
-    AudioConfig config;
-    config.waveform = "sine";
-    config.effects = {"delay", "lowpass"};
+    // Configure with loaded settings
     audioSystem.configure(config);
     
     return audioSystem;
@@ -31,16 +29,33 @@ AudioSystem initializeAudioSystem(float sampleRate) {
 int main() 
 {
     try {
-        // Configuration constants
-        constexpr float SAMPLE_RATE = 44100.0f;
-        constexpr unsigned int BUFFER_FRAMES = 512;
-        constexpr int MIDI_PORT = 1;
-        
         std::cout << "Initializing Audio Synthesis System..." << std::endl;
         
-        // Initialize audio system
-        AudioSystem audioSystem = initializeAudioSystem(SAMPLE_RATE);
-        AudioDevice audioDevice(&audioSystem, SAMPLE_RATE, BUFFER_FRAMES);
+        // Load configuration from XML file
+        ConfigReader configReader;
+        AudioConfig config;
+        
+        try {
+            config = configReader.loadConfig("config.xml");
+            std::cout << "Loaded configuration from config.xml" << std::endl;
+            std::cout << "  Waveform: " << config.waveform << std::endl;
+            std::cout << "  Sample Rate: " << config.sampleRate << " Hz" << std::endl;
+            std::cout << "  Buffer Frames: " << config.bufferFrames << std::endl;
+            std::cout << "  MIDI Port: " << config.midiPort << std::endl;
+            std::cout << "  Effects: ";
+            for (size_t i = 0; i < config.effects.size(); ++i) {
+                std::cout << config.effects[i];
+                if (i < config.effects.size() - 1) std::cout << ", ";
+            }
+            std::cout << std::endl;
+        } catch (const std::exception& e) {
+            std::cout << "Warning: Failed to load config.xml (" << e.what() << "), using defaults" << std::endl;
+            // config will use default values from constructor
+        }
+        
+        // Initialize audio system with configuration
+        AudioSystem audioSystem = initializeAudioSystem(config);
+        AudioDevice audioDevice(&audioSystem, config.sampleRate, config.bufferFrames);
 
         // Create the AudioSystemAdapter for MIDI integration
         AudioSystemAdapter audioSystemAdapter(&audioSystem);
@@ -54,7 +69,7 @@ int main()
         
         // Initialize MIDI device
         std::cout << "Initializing MIDI device..." << std::endl;
-        MidiDevice midiDevice(MIDI_PORT);
+        MidiDevice midiDevice(config.midiPort);
         
         // Attach the AudioSystemAdapter to the MidiDevice before starting
         midiDevice.attach(&audioSystemAdapter);
