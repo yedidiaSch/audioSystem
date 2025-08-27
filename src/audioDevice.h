@@ -5,9 +5,7 @@
 #include <memory>
 #include "audioSystem.h"
 #include "Effects/IEffect.h"
-
-// Forward declaration to avoid hard dependency when RtAudio is not available
-class RtAudio;
+#include "RtAudio.h"
 
 /**
  * @class AudioDevice

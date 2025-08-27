@@ -1,22 +1,24 @@
 #include "audioDevice.h"
+#include "RtAudio.h"
 
 AudioDevice::AudioDevice(AudioSystem* audioSystem, float sampleRate, unsigned int bufferFrames) :
                                                                     itsAudioSystem  (audioSystem),
+                                                                    m_dac          (std::make_unique<RtAudio>()),
                                                                     m_sampleRate    (sampleRate),
                                                                     m_bufferFrames  (bufferFrames) 
 {
-    if (m_dac.getDeviceCount() < 1) 
+    if (m_dac->getDeviceCount() < 1) 
     {
         std::cerr << "No audio devices found!" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     RtAudio::StreamParameters parameters;
-    parameters.deviceId = m_dac.getDefaultOutputDevice();
+    parameters.deviceId = m_dac->getDefaultOutputDevice();
     parameters.nChannels = 2;  // Stereo output (2 channels)
     parameters.firstChannel = 0;
 
-    int error = m_dac.openStream(&parameters, nullptr, RTAUDIO_FLOAT32, 
+    int error = m_dac->openStream(&parameters, nullptr, RTAUDIO_FLOAT32, 
                                 static_cast<unsigned int>(sampleRate), &bufferFrames, 
                                 &AudioDevice::audioCallback, this);
     if (error) 
@@ -28,7 +30,7 @@ AudioDevice::AudioDevice(AudioSystem* audioSystem, float sampleRate, unsigned in
 
 void AudioDevice::start() 
 {
-    int error = m_dac.startStream();
+    int error = m_dac->startStream();
     if (error) 
     {
         std::cerr << "Failed to start audio stream!" << std::endl;
@@ -38,12 +40,12 @@ void AudioDevice::start()
 
 void AudioDevice::stop() 
 {
-    if (m_dac.isStreamRunning()) m_dac.stopStream();
+    if (m_dac->isStreamRunning()) m_dac->stopStream();
 }
 
 AudioDevice::~AudioDevice() 
 {
-    if (m_dac.isStreamOpen()) m_dac.closeStream();
+    if (m_dac->isStreamOpen()) m_dac->closeStream();
 }
 
 int AudioDevice::audioCallback(void* outputBuffer, void* /*inputBuffer*/, unsigned int nBufferFrames,

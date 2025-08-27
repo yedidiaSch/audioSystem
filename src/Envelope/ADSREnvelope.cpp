@@ -5,7 +5,7 @@ ADSREnvelope::ADSREnvelope(float attackTime, float decayTime, float sustainLevel
     : currentStage(Stage::Idle),
       attackTime(std::max(0.001f, attackTime)),        // Minimum 1ms attack
       decayTime(std::max(0.001f, decayTime)),          // Minimum 1ms decay  
-      sustainLevel(std::clamp(sustainLevel, 0.0f, 1.0f)), // Clamp to valid range
+      sustainLevel(std::min(std::max(sustainLevel, 0.0f), 1.0f)), // Clamp to valid range
       releaseTime(std::max(0.001f, releaseTime)),      // Minimum 1ms release
       currentLevel(0.0f),
       currentSample(0.0f)

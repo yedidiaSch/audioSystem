@@ -60,13 +60,13 @@ void DelayEffect::setDelayTime(float delayTime)
 void DelayEffect::setFeedback(float feedback)
 {
     // Clamp feedback to prevent runaway feedback
-    m_feedback = std::clamp(feedback, 0.0f, 0.95f);
+    m_feedback = std::min(std::max(feedback, 0.0f), 0.95f);
 }
 
 void DelayEffect::setMix(float mix)
 {
     // Clamp mix to valid range
-    m_mix = std::clamp(mix, 0.0f, 1.0f);
+    m_mix = std::min(std::max(mix, 0.0f), 1.0f);
 }
 
 // Resize the delay buffers whenever parameters change

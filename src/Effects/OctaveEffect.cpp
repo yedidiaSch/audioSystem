@@ -4,7 +4,7 @@
 
 OctaveEffect::OctaveEffect(bool higher, float blend)
     : m_higher(higher), 
-      m_blend(std::clamp(blend, 0.0f, 1.0f)), 
+      m_blend(std::min(std::max(blend, 0.0f), 1.0f)), 
       m_phase(0.0f), 
       m_frequency(0.0f), 
       m_sampleRate(44100.0f) // Default sample rate
@@ -55,7 +55,7 @@ void OctaveEffect::setHigher(bool higher)
 
 void OctaveEffect::setBlend(float blend) 
 {
-    m_blend = std::clamp(blend, 0.0f, 1.0f);
+    m_blend = std::min(std::max(blend, 0.0f), 1.0f);
 }
 
 void OctaveEffect::setFrequency(float frequency) 
