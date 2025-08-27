@@ -1,9 +1,26 @@
-#ifndef NOTES_H
-#define NOTES_H
+#pragma once
 
 #include <array>
 
-// Precomputed MIDI note frequencies for notes 0-127
+/**
+ * @file notes.h
+ * @brief Precomputed MIDI note frequency constants
+ * 
+ * Contains a lookup table of frequencies for all 128 MIDI notes (0-127).
+ * Frequencies are calculated using the standard formula:
+ * f = 440 × 2^((n-69)/12) where n is the MIDI note number
+ */
+
+/**
+ * @brief Precomputed MIDI note frequencies for notes 0-127
+ * 
+ * This array provides fast lookup of frequencies for MIDI notes without
+ * requiring expensive floating-point calculations at runtime. Index corresponds
+ * to MIDI note number, value is frequency in Hz.
+ * 
+ * Note 69 (A4) = 440 Hz (concert pitch)
+ * Note 60 (C4) = 261.626 Hz (middle C)
+ */
 constexpr std::array<float, 128> MIDI_NOTE_FREQUENCIES = {
     8.175799f, 8.661957f, 9.177024f, 9.722718f, 10.300861f, 10.913382f, 11.562326f, 12.249857f,
     12.978272f, 13.750000f, 14.567618f, 15.433853f, 16.351598f, 17.323914f, 18.354048f, 19.445436f,
@@ -22,5 +39,3 @@ constexpr std::array<float, 128> MIDI_NOTE_FREQUENCIES = {
     5274.040911f, 5587.651703f, 5919.910763f, 6271.926976f, 6644.875161f, 7040.000000f, 7458.620184f, 7902.132820f,
     8372.018090f, 8869.844191f, 9397.272573f, 9956.063479f, 10548.081821f, 11175.303406f, 11839.821527f, 12543.853951f
 };
-
-#endif // NOTES_H

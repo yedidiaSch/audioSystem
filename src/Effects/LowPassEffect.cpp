@@ -27,20 +27,31 @@ void LowPassEffect::reset()
 
 void LowPassEffect::setSampleRate(float sampleRate)
 {
-    m_sampleRate = sampleRate;
-    updateAlpha();
+    if (sampleRate > 0.0f) {
+        m_sampleRate = sampleRate;
+        updateAlpha();
+    }
 }
 
 void LowPassEffect::setCutoff(float cutoff)
 {
-    m_cutoff = cutoff;
-    updateAlpha();
+    // Validate cutoff frequency (should be positive and below Nyquist frequency)
+    if (cutoff > 0.0f && cutoff < m_sampleRate * 0.5f) {
+        m_cutoff = cutoff;
+        updateAlpha();
+    }
 }
 
 void LowPassEffect::updateAlpha()
 {
     // Precompute filter coefficient from cutoff frequency
-    float dt = 1.0f / m_sampleRate;
-    float rc = 1.0f / (2.0f * M_PI * m_cutoff);
-    m_alpha = dt / (rc + dt);
+    if (m_sampleRate > 0.0f && m_cutoff > 0.0f) {
+        float dt = 1.0f / m_sampleRate;
+        float rc = 1.0f / (2.0f * M_PI * m_cutoff);
+        m_alpha = dt / (rc + dt);
+        
+        // Clamp alpha to valid range [0, 1]
+        if (m_alpha > 1.0f) m_alpha = 1.0f;
+        if (m_alpha < 0.0f) m_alpha = 0.0f;
+    }
 }

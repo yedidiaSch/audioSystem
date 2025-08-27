@@ -1,14 +1,46 @@
-# Ignore all compiled files
+# Compiled Object files
 *.gch
 *.o
+*.obj
 *.bin
 *.so
 *.out
 *.elf
 
-# Ignore specific directories
+# Executables
+*.exe
+*.app
+audioApp
+
+# Build directories
 /build/
 /temp/
+/debug/
+/release/
 
-# Ignore all log files
+# IDE files
+.vscode/
+.vs/
+*.vcxproj*
+*.sln
+
+# Log files
 *.log
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Dependencies
+/deps/
+/lib/
+/third-party/
+
+# Test outputs
+/test-results/

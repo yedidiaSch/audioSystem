@@ -1,12 +1,13 @@
-#ifndef AUDIODEVICE_H
-#define AUDIODEVICE_H
+#pragma once
 
 #include <iostream>
 #include <vector>
 #include <memory>
-#include "RtAudio.h"
 #include "audioSystem.h"
 #include "Effects/IEffect.h"
+
+// Forward declaration to avoid hard dependency when RtAudio is not available
+class RtAudio;
 
 /**
  * @class AudioDevice
@@ -82,7 +83,7 @@ private:
     /**
      * @brief RtAudio instance that interfaces with audio hardware
      */
-    RtAudio             m_dac;
+    std::unique_ptr<RtAudio> m_dac;
 
     /**
      * @brief The sample rate used for audio processing (in Hz)
@@ -97,5 +98,3 @@ private:
      */
     unsigned int        m_bufferFrames;
 };
-
-#endif

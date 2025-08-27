@@ -1,5 +1,6 @@
 #include <cmath>
-#include <algorithm> // For std::find
+#include <algorithm> // For std::find and std::transform
+#include <cctype>    // For std::tolower
 #include "audioSystem.h"
 #include "Waves/SquareWave.h" // Include the square wave implementation
 #include "Waves/SineWave.h"
@@ -9,63 +10,95 @@
 #include "Effects/DelayEffect.h"
 #include "Effects/LowPassEffect.h"
 
+namespace {
+    /**
+     * @brief Convert string to lowercase for case-insensitive comparison
+     */
+    std::string toLowercase(const std::string& str) {
+        std::string result = str;
+        std::transform(result.begin(), result.end(), result.begin(),
+                      [](unsigned char c) { return std::tolower(c); });
+        return result;
+    }
+}
+
 AudioSystem::AudioSystem(float sampleRate) : m_frequency(0.0f),
-                                             m_sampleRate(sampleRate),
+                                             m_sampleRate(sampleRate > 0.0f ? sampleRate : 44100.0f),
                                              m_phase(0.0f),
                                              m_noteOn(false) 
 {
+    // Validate sample rate
+    if (sampleRate <= 0.0f) {
+        // Use a reasonable default and potentially log warning
+        m_sampleRate = 44100.0f;
+    }
+    
     // Default to square wave
     m_waveform = std::make_shared<SquareWave>();
 }
 
 void AudioSystem::setWaveform(std::shared_ptr<IWave> waveform)
 {
-    m_waveform = waveform;
+    if (waveform) {
+        m_waveform = waveform;
+    }
+    // If waveform is null, keep existing waveform
 }
 
 // Configure the oscillator and effects based on the provided AudioConfig
 void AudioSystem::configure(const AudioConfig& config)
 {
-    // Select waveform
-    if (config.waveform == "sine")
+    // Select waveform (case-insensitive)
+    std::string waveformLower = toLowercase(config.waveform);
+    
+    if (waveformLower == "sine") {
         m_waveform = std::make_shared<SineWave>();
-    else if (config.waveform == "sawtooth")
+    } else if (waveformLower == "sawtooth" || waveformLower == "saw") {
         m_waveform = std::make_shared<SawtoothWave>();
-    else if (config.waveform == "triangle")
+    } else if (waveformLower == "triangle" || waveformLower == "tri") {
         m_waveform = std::make_shared<TriangleWave>();
-    else
+    } else if (waveformLower == "square" || waveformLower.empty()) {
+        // Default to square wave for empty or unrecognized waveforms
         m_waveform = std::make_shared<SquareWave>();
+    } else {
+        // Fallback to square wave for unrecognized waveforms
+        m_waveform = std::make_shared<SquareWave>();
+    }
 
     // Clear existing effects
     m_effects.clear();
 
-    // Instantiate effects listed in the configuration
+    // Instantiate effects listed in the configuration (case-insensitive)
     for (const auto& name : config.effects)
     {
-        if (name == "octave")
-        {
+        std::string effectLower = toLowercase(name);
+        
+        if (effectLower == "octave") {
             auto eff = std::make_shared<OctaveEffect>();
             m_effects.push_back(eff);
-        }
-        else if (name == "delay")
-        {
+        } else if (effectLower == "delay" || effectLower == "echo") {
             auto eff = std::make_shared<DelayEffect>(0.3f, 0.5f, 0.5f, m_sampleRate);
             m_effects.push_back(eff);
-        }
-        else if (name == "lowpass")
-        {
+        } else if (effectLower == "lowpass" || effectLower == "lpf" || effectLower == "filter") {
             auto eff = std::make_shared<LowPassEffect>(1000.0f, m_sampleRate);
             m_effects.push_back(eff);
         }
+        // Silently ignore unrecognized effect names
     }
 }
 
 void AudioSystem::triggerNote(float newFrequency)
 {
+    // Validate frequency range (20 Hz to 20 kHz is typical audio range)
+    if (newFrequency <= 0.0f || newFrequency > 20000.0f) {
+        return; // Ignore invalid frequencies
+    }
+    
     m_frequency = newFrequency;
     m_noteOn = true;
     m_phase = 0.0f;
 
+    // Configure effects with the new frequency and sample rate
     for (auto& effect : m_effects)
     {
         if (auto octave = std::dynamic_pointer_cast<OctaveEffect>(effect))
@@ -113,17 +146,22 @@ std::pair<float, float> AudioSystem::getNextSample()
 std::pair<float, float> AudioSystem::applyEffects(std::pair<float, float> stereoSample) 
 {
     // Apply each effect in the chain to the stereo sample
-    for (auto& effect : m_effects) 
+    for (const auto& effect : m_effects) 
     {
-        stereoSample = effect->process(stereoSample);
+        if (effect) { // Null check for safety
+            stereoSample = effect->process(stereoSample);
+        }
     }
 
     return stereoSample;
 }
 
-
 void AudioSystem::addEffect(std::shared_ptr<IEffect> effect) 
 {
+    if (!effect) {
+        return; // Don't add null effects
+    }
+    
     // Check if the effect already exists in the vector
     auto it = std::find(m_effects.begin(), m_effects.end(), effect);
     
@@ -137,8 +175,10 @@ void AudioSystem::addEffect(std::shared_ptr<IEffect> effect)
 
 void AudioSystem::resetEffects() 
 {
-    for (auto& effect : m_effects) 
+    for (const auto& effect : m_effects) 
     {
-        effect->reset();
+        if (effect) { // Null check for safety
+            effect->reset();
+        }
     }
 }
