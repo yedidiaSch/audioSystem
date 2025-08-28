@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example configuration for bright, modern sound -->
+<audioSystemConfig>
+    <audio>
+        <sampleRate>48000.0</sampleRate>
+        <bufferFrames>256</bufferFrames>
+    </audio>
+    
+    <waveform>
+        <type>sawtooth</type>
+    </waveform>
+    
+    <effects>
+        <effect>octave</effect>
+        <effect>delay</effect>
+    </effects>
+    
+    <midi>
+        <port>0</port>
+    </midi>
+    
+    <defaultFrequency>440.0</defaultFrequency>
+</audioSystemConfig>

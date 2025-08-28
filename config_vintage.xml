@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example configuration for warm, vintage sound -->
+<audioSystemConfig>
+    <audio>
+        <sampleRate>44100.0</sampleRate>
+        <bufferFrames>1024</bufferFrames>
+    </audio>
+    
+    <waveform>
+        <type>triangle</type>
+    </waveform>
+    
+    <effects>
+        <effect>lowpass</effect>
+        <effect>delay</effect>
+    </effects>
+    
+    <midi>
+        <port>0</port>
+    </midi>
+    
+    <defaultFrequency>261.63</defaultFrequency> <!-- Middle C -->
+</audioSystemConfig>
