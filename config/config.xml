@@ -55,4 +55,17 @@
     <!-- Default frequency for testing and initialization (Hz) -->
     <!-- Standard A4 = 440 Hz, Middle C = 261.63 Hz -->
     <defaultFrequency>440.0</defaultFrequency>
+    
+    <input>
+        <!-- Input mode selection -->
+        <!-- Available modes:
+             - midi: Use MIDI controller input (default)
+             - sequencer: Use built-in audio sequencer for testing
+        -->
+        <mode>sequencer</mode>
+        
+        <!-- Sequence type for sequencer mode -->
+        <!-- Available types: scale, chord, melody, demo (default) -->
+        <sequenceType>demo</sequenceType>
+    </input>
 </audioSystemConfig>

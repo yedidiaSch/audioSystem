@@ -5,6 +5,7 @@
 #include "audioSystem.h"
 #include "audioDevice.h"
 #include "Midi/MidiDevice.h"
+#include "AudioSequencer.h"
 #include "notes.h"
 #include "AudioSystemAdapter.h"
 #include "ConfigReader.h"
@@ -43,7 +44,12 @@ int main()
             std::cout << "  Waveform: " << config.waveform << std::endl;
             std::cout << "  Sample Rate: " << config.sampleRate << " Hz" << std::endl;
             std::cout << "  Buffer Frames: " << config.bufferFrames << std::endl;
-            std::cout << "  MIDI Port: " << config.midiPort << std::endl;
+            std::cout << "  Input Mode: " << config.inputMode << std::endl;
+            if (config.inputMode == "midi") {
+                std::cout << "  MIDI Port: " << config.midiPort << std::endl;
+            } else if (config.inputMode == "sequencer") {
+                std::cout << "  Sequence Type: " << config.sequenceType << std::endl;
+            }
             std::cout << "  Effects: ";
             for (size_t i = 0; i < config.effects.size(); ++i) {
                 std::cout << config.effects[i];
@@ -69,27 +75,57 @@ int main()
         // Add a delay to let the audio system initialize fully
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         
-        // Initialize MIDI device
-        std::cout << "Initializing MIDI device..." << std::endl;
-        MidiDevice midiDevice(config.midiPort);
-        
-        // Attach the AudioSystemAdapter to the MidiDevice before starting
-        midiDevice.attach(&audioSystemAdapter);
-        
-        // Start MIDI processing
-        std::cout << "Starting MIDI device..." << std::endl;
-        midiDevice.start();
-        
-        std::cout << "Audio system ready! Play your MIDI controller or press Enter to stop..." << std::endl;
-        
-        // Main program loop - keep system alive while waiting for input
-        std::cin.get();
-        
-        std::cout << "Shutting down gracefully..." << std::endl;
-        
-        // Stop devices in reverse order of starting
-        midiDevice.stop();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        // Choose input mode based on configuration
+        if (config.inputMode == "sequencer") {
+            // Sequencer mode - for testing without MIDI controller
+            std::cout << "Initializing audio sequencer..." << std::endl;
+            AudioSequencer sequencer;
+            
+            // Attach the AudioSystemAdapter to the sequencer
+            sequencer.attach(&audioSystemAdapter);
+            
+            std::cout << "🎵 Audio system ready in SEQUENCER mode!" << std::endl;
+            std::cout << "Playing " << config.sequenceType << " sequence..." << std::endl;
+            std::cout << "Press Enter to replay, or Ctrl+C to stop." << std::endl;
+            
+            // Play the initial sequence
+            sequencer.playSequenceOnce(config.sequenceType);
+            
+            // Main program loop - replay sequence when user presses Enter
+            std::string input;
+            while (std::getline(std::cin, input)) {
+                if (input.empty()) {
+                    // Empty input (just Enter pressed) - replay sequence
+                    std::cout << "\n🔄 Replaying sequence..." << std::endl;
+                    sequencer.playSequenceOnce(config.sequenceType);
+                } else {
+                    // Any other input - exit
+                    break;
+                }
+            }
+            
+            std::cout << "Shutting down sequencer..." << std::endl;
+            
+        } else {
+            // MIDI mode - traditional MIDI controller input
+            std::cout << "Initializing MIDI device..." << std::endl;
+            MidiDevice midiDevice(config.midiPort);
+            
+            // Attach the AudioSystemAdapter to the MidiDevice before starting
+            midiDevice.attach(&audioSystemAdapter);
+            
+            // Start MIDI processing
+            std::cout << "Starting MIDI device..." << std::endl;
+            midiDevice.start();
+            
+            std::cout << "🎹 Audio system ready in MIDI mode! Play your MIDI controller or press Enter to stop..." << std::endl;
+            
+            // Main program loop - keep system alive while waiting for input
+            std::cin.get();
+            
+            std::cout << "Shutting down MIDI device..." << std::endl;
+            midiDevice.stop();
+        }
         audioDevice.stop();
         
         // Final sleep to ensure all resources are released

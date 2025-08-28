@@ -74,6 +74,24 @@ Default frequency for testing and initialization in Hz:
 - 440.0: Standard A4 pitch
 - 261.63: Middle C
 
+#### Input Mode Configuration
+```xml
+<input>
+    <mode>sequencer</mode>
+    <sequenceType>demo</sequenceType>
+</input>
+```
+
+- **mode**: Input mode for the audio system
+  - **midi**: Use MIDI controller input (default)
+  - **sequencer**: Use built-in audio sequencer for testing
+
+- **sequenceType**: Type of musical sequence for sequencer mode
+  - **demo**: Comprehensive demonstration sequence (default)
+  - **scale**: Major scale (C-D-E-F-G-A-B-C)
+  - **chord**: Chord progression arpeggios
+  - **melody**: Simple melody ("Twinkle Twinkle Little Star")
+
 ## Example Configurations
 
 ### Default Configuration (`config.xml`)
@@ -87,6 +105,12 @@ Bright, contemporary sound using sawtooth wave with octave effects.
 
 ### Clean Sound (`config_clean.xml`)
 Pure sine wave with no effects for testing.
+
+### Sequencer Demo (`config_sequencer_demo.xml`)
+Built-in musical sequences for testing without MIDI controller.
+
+### MIDI Live Performance (`config_midi_live.xml`)
+Optimized for low-latency live MIDI performance.
 
 ## Usage in Code
 

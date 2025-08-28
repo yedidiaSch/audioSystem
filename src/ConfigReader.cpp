@@ -88,6 +88,18 @@ AudioConfig ConfigReader::loadConfig(const std::string& filename)
             // Parse default frequency
             config.defaultFrequency = getNodeFloat(node, config.defaultFrequency);
         }
+        else if (nodeName == "input") {
+            // Parse input configuration
+            xmlNode* modeNode = findChildNode(node, "mode");
+            if (modeNode) {
+                config.inputMode = getNodeText(modeNode);
+            }
+            
+            xmlNode* sequenceTypeNode = findChildNode(node, "sequenceType");
+            if (sequenceTypeNode) {
+                config.sequenceType = getNodeText(sequenceTypeNode);
+            }
+        }
     }
     
     xmlFreeDoc(doc);

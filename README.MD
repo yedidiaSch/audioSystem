@@ -7,11 +7,13 @@ A real-time audio synthesis engine that responds to MIDI input, generating digit
 ## Features
 - Real-time audio processing using RtAudio
 - MIDI input support via RtMidi
+- **Built-in audio sequencer for testing without MIDI controller**
 - Modular effects chain system
 - Configurable sample rate and buffer size
 - Multiple waveforms including sine, square, sawtooth and triangle
 - Built-in delay and low-pass filter effects
 - Simple configuration API for selecting waves and effects
+- **XML-based configuration with input mode selection**
 
 ## Requirements
 - C++14 compatible compiler
@@ -40,15 +42,35 @@ sudo make install
 ```
 
 ### Usage
-1. Connect a MIDI input device to your computer
-2. Run the application:
+1. **MIDI Mode** (default): Connect a MIDI input device to your computer
+2. **Sequencer Mode** (for testing): Edit `config/config.xml` and set `<mode>sequencer</mode>`
+3. Run the application:
 
 ```
 ./bin/audioApp
 ```
 
-3. Play notes on your MIDI controller to generate audio
-4. Press any key in the terminal window to stop the application
+4. **MIDI Mode**: Play notes on your MIDI controller to generate audio
+5. **Sequencer Mode**: Enjoy the automated musical sequence, press Enter to replay
+6. Press Ctrl+C or relevant key to stop the application
+
+### Configuration Modes
+The system supports two input modes configurable in `config/config.xml`:
+
+**MIDI Mode:**
+```xml
+<input>
+    <mode>midi</mode>
+</input>
+```
+
+**Sequencer Mode (Testing):**
+```xml
+<input>
+    <mode>sequencer</mode>
+    <sequenceType>demo</sequenceType>  <!-- Options: scale, chord, melody, demo -->
+</input>
+```
 
 ### Configuration Example
 The audio system can be configured at runtime with a simple structure:
@@ -87,6 +109,9 @@ See `embedded/` for a reference port using FreeRTOS and the STM32 HAL. It shows 
 - ✅ Performance optimizations in audio processing
 - ✅ Better resource management and memory safety
 - ✅ Case-insensitive configuration system
+- ✅ **Built-in audio sequencer for testing without MIDI controller**
+- ✅ **Configurable input modes (MIDI vs Sequencer)**
+- ✅ **Multiple musical sequence types (scale, chord, melody, demo)**
 
 ### Future Improvements
 - Add polyphony support (multiple notes at once)
