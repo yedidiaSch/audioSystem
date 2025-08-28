@@ -15,6 +15,7 @@
  * @return Configured AudioSystem instance
  */
 AudioSystem initializeAudioSystem(const AudioConfig& config) {
+
     AudioSystem audioSystem(config.sampleRate);
     
     // Configure with loaded settings
@@ -34,10 +35,11 @@ int main()
         // Load configuration from XML file
         ConfigReader configReader;
         AudioConfig config;
+        std::string configPath = "config/config.xml";
         
         try {
-            config = configReader.loadConfig("config.xml");
-            std::cout << "Loaded configuration from config.xml" << std::endl;
+            config = configReader.loadConfig(configPath);
+            std::cout << "Loaded configuration from " << configPath << std::endl;
             std::cout << "  Waveform: " << config.waveform << std::endl;
             std::cout << "  Sample Rate: " << config.sampleRate << " Hz" << std::endl;
             std::cout << "  Buffer Frames: " << config.bufferFrames << std::endl;
@@ -49,7 +51,7 @@ int main()
             }
             std::cout << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "Warning: Failed to load config.xml (" << e.what() << "), using defaults" << std::endl;
+            std::cout << "Warning: Failed to load " << configPath << " (" << e.what() << "), using defaults" << std::endl;
             // config will use default values from constructor
         }
         

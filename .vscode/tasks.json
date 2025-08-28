@@ -33,9 +33,11 @@
                 "-I/usr/include/rtmidi",
                 "-I/home/yedidia/rtaudio/include",
                 "-I/home/yedidia/rtaudio",
+                "-I/usr/include/libxml2",
                 "-L/home/yedidia/rtaudio/build",
                 "-lrtmidi",
                 "-lrtaudio",
+                "-lxml2",
                 "-lasound",
                 "-lpthread"
             ],
