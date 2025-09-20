@@ -32,7 +32,7 @@
              - sawtooth or saw: Bright, buzzy sound
              - triangle or tri: Softer than sawtooth, warmer than sine
         -->
-        <type>sine</type>
+        <type>triangle</type>
     </waveform>
     
     <effects>
@@ -42,7 +42,7 @@
              - delay or echo: Adds delayed repeats of the signal
              - lowpass, lpf, or filter: Removes high frequencies for warmer sound
         -->
-        <effect>delay</effect>
+        <!--effect>delay</effect-->
         <effect>lowpass</effect>
     </effects>
     

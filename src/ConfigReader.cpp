@@ -106,6 +106,57 @@ AudioConfig ConfigReader::loadConfig(const std::string& filename)
     return config;
 }
 
+AudioConfig ConfigReader::loadConfigWithFallback(const std::string& filename)
+{
+    AudioConfig config; // Start with defaults
+    
+    try {
+        config = loadConfig(filename);
+        std::cout << "✓ Successfully loaded configuration from " << filename << std::endl;
+        printConfig(config, filename);
+    } catch (const std::exception& e) {
+        std::cout << "⚠ Warning: Failed to load " << filename << " (" << e.what() << ")" << std::endl;
+        std::cout << "Using default configuration values." << std::endl;
+        printConfig(config, "defaults");
+    }
+    
+    return config;
+}
+
+void ConfigReader::printConfig(const AudioConfig& config, const std::string& source)
+{
+    if (!source.empty()) {
+        std::cout << "\n--- Configuration (" << source << ") ---" << std::endl;
+    } else {
+        std::cout << "\n--- Configuration ---" << std::endl;
+    }
+    
+    std::cout << "  Waveform: " << config.waveform << std::endl;
+    std::cout << "  Sample Rate: " << config.sampleRate << " Hz" << std::endl;
+    std::cout << "  Buffer Frames: " << config.bufferFrames << std::endl;
+    std::cout << "  Input Mode: " << config.inputMode << std::endl;
+    
+    if (config.inputMode == "midi") {
+        std::cout << "  MIDI Port: " << config.midiPort << std::endl;
+    } else if (config.inputMode == "sequencer") {
+        std::cout << "  Sequence Type: " << config.sequenceType << std::endl;
+    }
+    
+    std::cout << "  Default Frequency: " << config.defaultFrequency << " Hz" << std::endl;
+    std::cout << "  Effects: ";
+    
+    if (config.effects.empty()) {
+        std::cout << "(none)";
+    } else {
+        for (size_t i = 0; i < config.effects.size(); ++i) {
+            std::cout << config.effects[i];
+            if (i < config.effects.size() - 1) std::cout << ", ";
+        }
+    }
+    std::cout << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+}
+
 std::string ConfigReader::getNodeText(xmlNode* node)
 {
     if (node == NULL) return "";

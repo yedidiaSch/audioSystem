@@ -3,7 +3,7 @@
 #include <string>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include "audioSystem.h"
+#include "AudioConfig.h"
 
 /**
  * @file ConfigReader.h
@@ -37,6 +37,20 @@ public:
      * @throws std::runtime_error if file cannot be read or parsed
      */
     AudioConfig loadConfig(const std::string& filename);
+
+    /**
+     * @brief Load configuration with automatic fallback to defaults and detailed logging
+     * @param filename Path to the XML configuration file
+     * @return AudioConfig structure, either from XML or with default values
+     */
+    AudioConfig loadConfigWithFallback(const std::string& filename);
+
+    /**
+     * @brief Print configuration details to console
+     * @param config The configuration to print
+     * @param source Description of the configuration source (e.g., "config.xml", "defaults")
+     */
+    static void printConfig(const AudioConfig& config, const std::string& source = "");
 
 private:
     /**

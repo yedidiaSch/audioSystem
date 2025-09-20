@@ -9,6 +9,7 @@
 #include "notes.h"
 #include "AudioSystemAdapter.h"
 #include "ConfigReader.h"
+#include "AudioConfig.h"
 
 /**
  * @brief Initialize and configure the audio system from XML configuration
@@ -33,33 +34,10 @@ int main()
     try {
         std::cout << "Initializing Audio Synthesis System..." << std::endl;
         
-        // Load configuration from XML file
-        ConfigReader configReader;
-        AudioConfig config;
-        std::string configPath = "config/config.xml";
-        
-        try {
-            config = configReader.loadConfig(configPath);
-            std::cout << "Loaded configuration from " << configPath << std::endl;
-            std::cout << "  Waveform: " << config.waveform << std::endl;
-            std::cout << "  Sample Rate: " << config.sampleRate << " Hz" << std::endl;
-            std::cout << "  Buffer Frames: " << config.bufferFrames << std::endl;
-            std::cout << "  Input Mode: " << config.inputMode << std::endl;
-            if (config.inputMode == "midi") {
-                std::cout << "  MIDI Port: " << config.midiPort << std::endl;
-            } else if (config.inputMode == "sequencer") {
-                std::cout << "  Sequence Type: " << config.sequenceType << std::endl;
-            }
-            std::cout << "  Effects: ";
-            for (size_t i = 0; i < config.effects.size(); ++i) {
-                std::cout << config.effects[i];
-                if (i < config.effects.size() - 1) std::cout << ", ";
-            }
-            std::cout << std::endl;
-        } catch (const std::exception& e) {
-            std::cout << "Warning: Failed to load " << configPath << " (" << e.what() << "), using defaults" << std::endl;
-            // config will use default values from constructor
-        }
+        // Load configuration from XML file with automatic fallback to defaults
+        ConfigReader    configReader;
+        std::string     configPath = "config/config.xml";
+        AudioConfig     config = configReader.loadConfigWithFallback(configPath);
         
         // Initialize audio system with configuration
         AudioSystem audioSystem = initializeAudioSystem(config);
