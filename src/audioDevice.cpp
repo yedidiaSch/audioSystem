@@ -18,22 +18,22 @@ AudioDevice::AudioDevice(AudioSystem* audioSystem, float sampleRate, unsigned in
     parameters.nChannels = 2;  // Stereo output (2 channels)
     parameters.firstChannel = 0;
 
-    int error = m_dac->openStream(&parameters, nullptr, RTAUDIO_FLOAT32, 
-                                static_cast<unsigned int>(sampleRate), &bufferFrames, 
-                                &AudioDevice::audioCallback, this);
-    if (error) 
-    {
-        std::cerr << "Failed to open audio stream!" << std::endl;
+    try {
+        m_dac->openStream(&parameters, nullptr, RTAUDIO_FLOAT32, 
+                         static_cast<unsigned int>(sampleRate), &bufferFrames, 
+                         &AudioDevice::audioCallback, this);
+    } catch (RtAudioError& error) {
+        std::cerr << "Failed to open audio stream: " << error.getMessage() << std::endl;
         exit(EXIT_FAILURE);
     }
 }
 
 void AudioDevice::start() 
 {
-    int error = m_dac->startStream();
-    if (error) 
-    {
-        std::cerr << "Failed to start audio stream!" << std::endl;
+    try {
+        m_dac->startStream();
+    } catch (RtAudioError& error) {
+        std::cerr << "Failed to start audio stream: " << error.getMessage() << std::endl;
         exit(EXIT_FAILURE);
     }
 }
