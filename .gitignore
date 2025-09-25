@@ -24,6 +24,9 @@ audioApp
 *.vcxproj*
 *.sln
 
+# ImGui files
+imgui.ini
+
 # Log files
 *.log
 
