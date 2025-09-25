@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../utilities/IObserver.h"
+#include "IObserver.h"
 #include "audioSystem.h"
-#include "Midi/MidiEvent.h"
+#include "MidiEvent.h"
 
 /**
  * @class AudioSystemAdapter

@@ -60,6 +60,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Include directories
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/Core
+    ${CMAKE_SOURCE_DIR}/src/Config
+    ${CMAKE_SOURCE_DIR}/src/Common
+    ${CMAKE_SOURCE_DIR}/src/Adapters
+    ${CMAKE_SOURCE_DIR}/src/Applications
+    ${CMAKE_SOURCE_DIR}/utilities
     ${RTAUDIO_INCLUDE_DIRS}
     ${RTMIDI_INCLUDE_DIRS}
     ${LIBXML2_INCLUDE_DIR}
@@ -71,7 +77,7 @@ add_subdirectory(utilities)
 
 # Create console application
 add_executable(audioApp
-    src/main.cpp
+    src/Applications/main.cpp
     $<TARGET_OBJECTS:audio_core>
     $<TARGET_OBJECTS:utilities_core>
 )
@@ -105,7 +111,7 @@ if(BUILD_GUI)
 
         # Create GUI application
         add_executable(audioGUI
-            src/main_gui.cpp
+            src/Applications/main_gui.cpp
             $<TARGET_OBJECTS:audio_core>
             $<TARGET_OBJECTS:utilities_core>
         )

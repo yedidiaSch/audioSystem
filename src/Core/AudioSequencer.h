@@ -3,9 +3,9 @@
 #include <vector>
 #include <chrono>
 #include <atomic>
-#include "../utilities/subject.h"
-#include "../utilities/threadBase.h"
-#include "Midi/MidiEvent.h"
+#include "subject.h"
+#include "threadBase.h"
+#include "MidiEvent.h"
 
 /**
  * @file AudioSequencer.h
