@@ -1,7 +1,7 @@
 #include "MidiDevice.h"
 #include "MidiEvent.h"
 #include <iostream>
-#include "../notes.h"
+#include "notes.h"
 
 // Constructor with port selection
 MidiDevice::MidiDevice(int portNumber) : isInitialized(false) {

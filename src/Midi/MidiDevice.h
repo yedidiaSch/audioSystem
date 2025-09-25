@@ -1,8 +1,10 @@
 #pragma once
 
 #include "RtMidi.h"
-#include "../../utilities/subject.h" // Updated path
+#include "subject.h"
 #include "MidiEvent.h"
+#include <vector>
+#include <string>
 #include <vector>
 #include <string>
 
