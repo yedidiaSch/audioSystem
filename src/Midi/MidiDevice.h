@@ -5,8 +5,6 @@
 #include "MidiEvent.h"
 #include <vector>
 #include <string>
-#include <vector>
-#include <string>
 
 /**
  * @class MidiDevice
