@@ -36,7 +36,25 @@ A real-time audio synthesis engine with both console and GUI interfaces, support
 
 ## Setup
 
-### Installation of Dependencies
+### CMake Build System (Recommended)
+The project now uses CMake for cross-platform building. See [CMAKE_BUILD.md](CMAKE_BUILD.md) for detailed instructions.
+
+**Quick Start:**
+```bash
+# Install dependencies (Ubuntu/Debian)
+sudo apt-get install build-essential cmake pkg-config libasound2-dev librtmidi-dev libxml2-dev libglfw3-dev libgl1-mesa-dev
+
+# Initialize submodules and build
+git submodule update --init --recursive
+chmod +x build.sh
+./build.sh
+
+# Run applications
+./build/bin/audioApp      # Console app
+./build/bin/audioGUI      # GUI app
+```
+
+### Manual Installation of Dependencies
 ```bash
 # Install ALSA development libraries
 sudo apt-get install libasound2-dev
@@ -115,16 +133,18 @@ make gui
 
 ## Build Tasks
 
-The project includes VS Code tasks for easy building and running:
+**Primary Build System:** CMake (see [CMAKE_BUILD.md](CMAKE_BUILD.md))
 
-### Available Tasks
-- **Build Console App**: Compiles the console application (`src/main.cpp`)
-- **Build GUI App**: Compiles the GUI application (`src/main_gui.cpp`) 
+The project includes VS Code tasks for both CMake and legacy builds:
+
+### CMake Tasks (Recommended)
+- **CMake: Build All**: Builds both console and GUI applications
+- **CMake: Build Console App**: Builds only the console application
+- **CMake: Build GUI App**: Builds only the GUI application
 - **Run Console App**: Builds and runs the console application
 - **Run GUI App**: Builds and runs the GUI application
-- **Create Bin Directory**: Creates the output directory for binaries
 
-### Manual Build Commands
+### Legacy Manual Build Commands (Deprecated)
 
 #### Console Application
 ```bash
