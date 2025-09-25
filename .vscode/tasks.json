@@ -14,52 +14,92 @@
             },
             "problemMatcher": []
         },
+
         {
-            "label": "Build Audio Project",
+            "label": "Build Console App",
             "type": "shell",
             "command": "g++",
             "args": [
                 "-g",
                 "-Wall",
                 "-Wextra",
-                "-std=c++17",
-                "${workspaceFolder}/src/*.cpp",
-                "!${workspaceFolder}/src/main.cpp",
-                "${workspaceFolder}/src/main_gui.cpp",
-                "${workspaceFolder}/src/Midi/*.cpp",
-                "${workspaceFolder}/utilities/QueueThread.cpp",
-                "${workspaceFolder}/utilities/TimerFd.cpp",
-                "${workspaceFolder}/utilities/subject.cpp",
-                "${workspaceFolder}/utilities/threadBase.cpp",
-                "${workspaceFolder}/src/Effects/*.cpp",
-                "${workspaceFolder}/src/Waves/*.cpp",
-                "${workspaceFolder}/src/Envelope/*.cpp",
-                "${workspaceFolder}/guiBase_cpp/lib/simple_gui.cpp",
-                "${workspaceFolder}/guiBase_cpp/src/application.cpp",
-                "-o",
-                "${workspaceFolder}/bin/audioApp",
-                "-I/usr/include/rtaudio",
+                "src/main.cpp",
+                "src/ConfigReader.cpp",
+                "src/audioSystem.cpp",
+                "src/audioDevice.cpp",
+                "src/AudioSequencer.cpp",
+                "src/AudioSystemAdapter.cpp",
+                "src/Midi/*.cpp",
+                "src/Effects/*.cpp",
+                "src/Waves/*.cpp",
+                "src/Envelope/*.cpp",
+                "utilities/*.cpp",
                 "-I/usr/include/rtmidi",
+                "-I/usr/include/rtaudio",
+                "-I./src",
                 "-I/usr/include/libxml2",
-                "-I${workspaceFolder}/guiBase_cpp/include",
-                "-I${workspaceFolder}/guiBase_cpp/external/imgui",
-                "-I${workspaceFolder}/guiBase_cpp/external/imgui/backends",
-                "-D__LINUX_PULSE__",
-                "-D_REENTRANT",
-                "-D__UNIX_JACK__",
-                "-D__LINUX_ALSA__",
-                "-L${workspaceFolder}/guiBase_cpp/build/lib",
-                "-lguibase",
-                "-L${workspaceFolder}/guiBase_cpp/build",
-                "-limgui",
-                "-lrtaudio",
                 "-lrtmidi",
+                "-lrtaudio",
                 "-lxml2",
                 "-lasound",
                 "-lpthread",
+                "-o",
+                "bin/audioApp"
+            ],
+            "group": "build",
+            "dependsOn": ["Create Bin Directory"],
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Build GUI App",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "src/main_gui.cpp",
+                "src/ConfigReader.cpp",
+                "src/audioSystem.cpp",
+                "src/audioDevice.cpp",
+                "src/AudioSequencer.cpp",
+                "src/AudioSystemAdapter.cpp",
+                "src/Midi/*.cpp",
+                "src/Effects/*.cpp",
+                "src/Waves/*.cpp",
+                "src/Envelope/*.cpp",
+                "utilities/QueueThread.cpp",
+                "utilities/TimerFd.cpp",
+                "utilities/subject.cpp",
+                "utilities/threadBase.cpp",
+                "-I./guiBase_cpp/include",
+                "-I./src",
+                "-I/usr/include/rtmidi",
+                "-I/usr/include/rtaudio",
+                "-I/usr/include/libxml2",
+                "./guiBase_cpp/build/lib/libguibase.a",
+                "./guiBase_cpp/build/libimgui.a",
+                "-lrtmidi",
+                "-lrtaudio",
+                "-lxml2",
+                "-lasound",
                 "-lglfw",
                 "-lGL",
-                "-ldl"
+                "-lX11",
+                "-lXrandr",
+                "-lXinerama",
+                "-lXcursor",
+                "-ldl",
+                "-lpthread",
+                "-o",
+                "bin/audioGUI"
             ],
             "group": {
                 "kind": "build",
@@ -74,6 +114,36 @@
             "options": {
                 "cwd": "${workspaceFolder}"
             }
+        },
+        {
+            "label": "Run Console App",
+            "type": "shell",
+            "command": "./bin/audioApp",
+            "group": "test",
+            "dependsOn": ["Build Console App"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run GUI App",
+            "type": "shell",
+            "command": "./bin/audioGUI", 
+            "group": "test",
+            "dependsOn": ["Build GUI App"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
         },
         {
             "type": "cppbuild",
