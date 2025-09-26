@@ -7,7 +7,7 @@ WaveformControlRenderer::WaveformControlRenderer(ConfigurationManager& configMan
 }
 
 void WaveformControlRenderer::render(GuiBase::GuiWindow& window) {
-    window.text("Waveform4 Type:");
+    window.text("Waveform Type:");
     
     const auto& waveformOptions = configManager.getWaveformOptions();
     size_t selectedWaveform = configManager.getSelectedWaveformIndex();
