@@ -71,7 +71,12 @@ void EffectParameterWindow::renderLowPassWindow() {
         
         // Cutoff Frequency slider (20 - 20000 Hz, logarithmic scale)
         float logCutoff = std::log10(lowPassParams_.cutoffFreq);
-        if (ImGui::SliderFloat("Cutoff Frequency (Hz)", &logCutoff, std::log10(20.0f), std::log10(20000.0f), "%.0f Hz")) {
+        if (ImGui::SliderFloat("Cutoff Frequency (Hz)", &logCutoff, std::log10(20.0f), std::log10(20000.0f),
+            [](float value, char* buf, int buf_size) {
+                float freq = std::pow(10.0f, value);
+                snprintf(buf, buf_size, "%.0f Hz", freq);
+                return true;
+            })) {
             lowPassParams_.cutoffFreq = std::pow(10.0f, logCutoff);
             changed = true;
         }
