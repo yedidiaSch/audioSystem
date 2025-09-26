@@ -5,6 +5,7 @@
 #include <utility>
 #include <string>
 #include "Effects/IEffect.h"
+#include "Effects/EffectParameters.h"
 #include "Waves/IWave.h"
 #include "AudioConfig.h"
 
@@ -83,6 +84,14 @@ public:
      * cleared and replaced based on this information.
      */
     void configure(const AudioConfig& config);
+
+    /**
+     * @brief Update effect parameters without recreating the effects chain
+     * @param effectName Name of the effect to update
+     * @param parameters Parameters to apply to the effect
+     * @return true if the effect was found and updated, false otherwise
+     */
+    bool updateEffectParameters(const std::string& effectName, const IEffectParameters& parameters);
 
 private:
     float m_frequency;                                ///< Current note frequency in Hz

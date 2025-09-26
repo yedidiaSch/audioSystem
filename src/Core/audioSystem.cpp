@@ -9,6 +9,7 @@
 #include "Effects/OctaveEffect.h"
 #include "Effects/DelayEffect.h"
 #include "Effects/LowPassEffect.h"
+#include "Effects/EffectParameters.h"
 
 namespace {
     /**
@@ -181,4 +182,46 @@ void AudioSystem::resetEffects()
             effect->reset();
         }
     }
+}
+
+bool AudioSystem::updateEffectParameters(const std::string& effectName, const IEffectParameters& parameters)
+{
+    std::string effectLower = toLowercase(effectName);
+    
+    for (auto& effect : m_effects)
+    {
+        if (effectLower == "delay" || effectLower == "echo") {
+            if (auto delayEffect = std::dynamic_pointer_cast<DelayEffect>(effect)) {
+                if (auto delayParams = dynamic_cast<const DelayParameters*>(&parameters)) {
+                    delayEffect->setDelayTime(delayParams->delayTime);
+                    delayEffect->setFeedback(delayParams->feedback);
+                    delayEffect->setMix(delayParams->mix);
+                    return true;
+                }
+            }
+        }
+        else if (effectLower == "lowpass" || effectLower == "lpf" || effectLower == "filter") {
+            if (auto lowPassEffect = std::dynamic_pointer_cast<LowPassEffect>(effect)) {
+                if (auto lowPassParams = dynamic_cast<const LowPassParameters*>(&parameters)) {
+                    lowPassEffect->setCutoff(lowPassParams->cutoffFreq);
+                    // Note: LowPassEffect doesn't have setResonance in the current implementation
+                    // This could be added to the effect later if needed
+                    return true;
+                }
+            }
+        }
+        else if (effectLower == "octave") {
+            if (auto octaveEffect = std::dynamic_pointer_cast<OctaveEffect>(effect)) {
+                if (auto octaveParams = dynamic_cast<const OctaveParameters*>(&parameters)) {
+                    // Convert octave shift to boolean (higher/lower)
+                    bool higher = octaveParams->octaveShift > 1.0f;
+                    octaveEffect->setHigher(higher);
+                    octaveEffect->setBlend(octaveParams->mix);
+                    return true;
+                }
+            }
+        }
+    }
+    
+    return false; // Effect not found or parameters don't match
 }

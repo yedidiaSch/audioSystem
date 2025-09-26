@@ -113,11 +113,13 @@ if(BUILD_GUI)
         add_executable(audioGUI
             src/Applications/main_gui.cpp
             $<TARGET_OBJECTS:audio_core>
+            $<TARGET_OBJECTS:gui_core>
             $<TARGET_OBJECTS:utilities_core>
         )
 
         target_include_directories(audioGUI PRIVATE
             ${CMAKE_SOURCE_DIR}/guiBase_cpp/include
+            ${CMAKE_SOURCE_DIR}/src/GUI
         )
 
         target_link_libraries(audioGUI
